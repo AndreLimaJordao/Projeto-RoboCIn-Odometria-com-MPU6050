@@ -1,6 +1,8 @@
 # Projeto da seletiva 2025 RoboCIn
 Por: André Lima Jordão <alj@cin.ufpe.br>
+
 Last release date: 13/01/2025
+
 First release date: 13/01/2025
 
 O presente projeto tem como objetivo realizar medições através do MPU6050, usando um STM32F767 como uC, e calcular a velocidade angular (rad/s) e movimentação angular (rad).
