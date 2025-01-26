@@ -1,7 +1,7 @@
 # Projeto da seletiva 2025 RoboCIn
 Por: André Lima Jordão <alj@cin.ufpe.br>
 
-Last release date: 15/01/2025
+Last update date: 26/01/2025
 
 First release date: 13/01/2025
 
