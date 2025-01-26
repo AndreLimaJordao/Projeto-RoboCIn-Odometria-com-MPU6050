@@ -38,9 +38,10 @@ int main() {
     // Inicializa o MPU6050
     mpu.init();                                 // Inicializa o MPU6050
     bool calibrated = false;                    // Verifica se o MPU6050 está calibrado
-    for(int i = 0; i < 3 && !calibrated; i++)   // Verifica se o MPU6050 está calibrado até 3 vezes
+    for(int i = 0; i < 3 && !calibrated; i++){  // Verifica se o MPU6050 está calibrado até 3 vezes
         calibrated = mpu.selfTestOK();          // Verifica se o MPU6050 está calibrado
-        ThisThread::sleep_for(100ms);          // Delay de 100ms para a calibração
+        ThisThread::sleep_for(100ms);           // Delay de 100ms para a calibração
+    }
     if(!calibrated)                             // Se o MPU6050 não estiver calibrado
         return 1;                               // Encerra o programa
 
