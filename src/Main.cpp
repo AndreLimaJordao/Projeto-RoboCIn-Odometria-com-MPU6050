@@ -23,8 +23,8 @@ int main() {
     const int OFFSET[2] = {0, 0};               // Valores de offset do sensor em relação ao centro do robô (não usado)
     const float GYRO_READ_SCALE = 65.536;       // Escala de leitura do giroscópio para converção em graus por segundo
     const float ACCEL_READ_SCALE = 8192;        // Escala de leitura do acelerômetro para converção em g
-    const float ANGULAR_VEL_SCALE = 0;          // Escala de correção da velocidade angular do robô
-    const float ANGULAR_VEL_OFFSET = 0;         // Componente linear de correção da velocidade angular
+    const float ANGULAR_VEL_SCALE = 0;          // Escala de correção da velocidade angular do robô (não usado por falta de testes)
+    const float ANGULAR_VEL_OFFSET = 0;         // Componente linear de correção da velocidade angular (não usado por falta de testes)
     const float ERROR_MARGIN = 0.5;             // Margem de erro para a leitura da velocidade angular            
 
     // Variáveis gerais
@@ -37,10 +37,12 @@ int main() {
     
     // Inicializa o MPU6050
     mpu.init();                                 // Inicializa o MPU6050
-    bool calibrated = mpu.selfTestOK();         // Verifica se o MPU6050 está calibrado
-    while(!(calibrated)){
-        // Indicar que IMU não está calibrado e o uC deve ser reiniciado ou MPU6050
-    }
+    bool calibrated = false;                    // Verifica se o MPU6050 está calibrado
+    for(int i = 0; i < 3 && !calibrated; i++)   // Verifica se o MPU6050 está calibrado até 3 vezes
+        calibrated = mpu.selfTestOK();          // Verifica se o MPU6050 está calibrado
+        ThisThread::sleep_for(100ms);          // Delay de 100ms para a calibração
+    if(!calibrated)                             // Se o MPU6050 não estiver calibrado
+        return 1;                               // Encerra o programa
 
     // Variáveis de posição do sensor
     float offset_radius = sqrt(pow(OFFSET[0], 2) + pow(OFFSET[1], 2));
