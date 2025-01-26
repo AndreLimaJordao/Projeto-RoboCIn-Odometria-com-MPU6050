@@ -21,8 +21,8 @@ MPU6050 mpu(MPU6050_ADDRESS, AFS_4G, GFS_500DPS, SDA_PIN, SCL_PIN, NC);  // Conf
 int main() {
     // Variáveis de calibração
     const int OFFSET[2] = {0, 0};               // Valores de offset do sensor em relação ao centro do robô (não usado)
-    const float GYRO_READ_SCALE = 131.07;       // Escala de leitura do giroscópio para converção em graus por segundo
-    const float ACCEL_READ_SCALE = 16384;       // Escala de leitura do acelerômetro para converção em g
+    const float GYRO_READ_SCALE = 65.536;       // Escala de leitura do giroscópio para converção em graus por segundo
+    const float ACCEL_READ_SCALE = 8192;        // Escala de leitura do acelerômetro para converção em g
     const float ANGULAR_VEL_SCALE = 0;          // Escala de correção da velocidade angular do robô
     const float ANGULAR_VEL_OFFSET = 0;         // Componente linear de correção da velocidade angular
     const float ERROR_MARGIN = 0.5;             // Margem de erro para a leitura da velocidade angular            
@@ -37,6 +37,10 @@ int main() {
     
     // Inicializa o MPU6050
     mpu.init();                                 // Inicializa o MPU6050
+    bool calibrated = mpu.selfTestOK();         // Verifica se o MPU6050 está calibrado
+    while(!(calibrated)){
+        // Indicar que IMU não está calibrado e o uC deve ser reiniciado ou MPU6050
+    }
 
     // Variáveis de posição do sensor
     float offset_radius = sqrt(pow(OFFSET[0], 2) + pow(OFFSET[1], 2));
@@ -55,7 +59,7 @@ int main() {
         } while(abs(angular_velocity - angular_velocity_verify) > ERROR_MARGIN);            // Verifica se o valor é consistente  
         auto us = timer.elapsed_time().count();                                 // Conta o tempo em microsegundos
         timer.reset();                                                          // Reseta o timer
-        angle += angular_velocity * (DELAY_MS/1000 + us);                       // Integral para o cálculo do ângulo com dt = DELAY_MS (em ms) com correção
+        angle += angular_velocity * (DELAY_MS + us * 1000);                     // Integral para o cálculo do ângulo com dt = DELAY_MS (em ms) com correção                                            // Filtra os dados do sensor
         corrected_angle = fmod(angle + PI, 2 * PI) - PI;                        // Corrige o ângulo para o intervalo [-PI, PI] *
         ThisThread::sleep_for(DELAY_MS);                                        // Delay de DELAY_MS para a integral
         // * corrected_angle é o valor principal da posição angular por aproximação
